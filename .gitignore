@@ -57,6 +57,11 @@ node_modules/
 .node_repl_history
 
 # Output of 'npm pack'
+# backup artefacts – should not be in repo
+backups/
+backup.bat
+start-local.bat
+backup-explain.md
 *.tgz
 
 # Yarn Integrity file
