@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart BJB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">Smart-БЖБ<span>/ТЖБ</span></a>
+    <div class="header-actions">
+      <a href="teacher.html" class="btn btn-ghost btn-small">← Тізімге</a>
+      <button id="btn-logout" class="btn btn-ghost btn-small hidden">Шығу</button>
+    </div>
+  </header>
+
+  <!-- Live banner (shown on leave) -->
+  <div id="live-banner" class="hidden" style="position:sticky;top:57px;z-index:35;background:#FEF3C7;border-bottom:1px solid #FDE68A;color:#92400E;text-align:center;padding:10px 16px;font-weight:700"></div>
+
+  <main class="container">
+    <div id="state-loading" class="card" style="text-align:center"><p class="muted">Жүктелуде...</p></div>
+    <div id="state-error" class="card hidden" style="text-align:center">
+      <p id="error-text" class="muted"></p>
+      <a href="teacher.html" class="btn btn-secondary mt16">Тізімге өту</a>
+    </div>
+
+    <div id="content" class="hidden">
+      <div class="flex between wrap gap12 mb16">
+        <div>
+          <h1 id="r-topic" class="section-title" style="margin:0"></h1>
+          <p id="r-meta" class="small muted"></p>
+        </div>
+        <div class="flex gap8 wrap">
+          <button id="btn-copy-link" class="btn btn-secondary btn-small">Сілтемені көшіру</button>
+          <button id="btn-csv" class="btn btn-secondary btn-small">CSV жүктеу</button>
+        </div>
+      </div>
+
+      <!-- Notification / voice controls -->
+      <div class="card mb16">
+        <div class="flex wrap gap12 between" style="align-items:center">
+          <div>
+            <div style="font-weight:700">Live-хабарлама</div>
+            <div class="small muted">Оқушы сайттан шықса — тост, браузер хабарламасы және дауыс</div>
+          </div>
+          <div class="flex gap12 wrap">
+            <button id="btn-enable-notify" class="btn btn-secondary btn-small">Хабарламаны қосу</button>
+            <label class="toggle">
+              <input type="checkbox" id="toggle-voice" />
+              <span>Дауыс</span>
+            </label>
+          </div>
+        </div>
+        <p class="small muted mt16" style="background:var(--row-bg);padding:10px 12px;border-radius:10px">
+          Ескерту: бет жабық болса хабар келмейді. Қазақ дауысы барлық құрылғыда жоқ — онда орыс дауысы немесе дыбыс сигналы ойнайды. Кездейсоқ шығулар болуы мүмкін, сондықтан кестеде санақ пен уақыт көрсетіледі.
+        </p>
+      </div>
+
+      <div class="stats" id="stats">
+        <div class="stat"><div class="stat-value" id="stat-count">—</div><div class="stat-label">Қатысты</div></div>
+        <div class="stat"><div class="stat-value" id="stat-avg-score">—</div><div class="stat-label">Орташа балл</div></div>
+        <div class="stat"><div class="stat-value" id="stat-avg-percent">—</div><div class="stat-label">Орташа пайыз</div></div>
+        <div class="stat"><div class="stat-value" id="stat-submitted">—</div><div class="stat-label">Жіберді</div></div>
+      </div>
+
+      <div class="card mb16">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Ең көп қателескен сұрақтар</h3>
+        <div id="hard-questions" class="small muted">Әзірге дерек жоқ</div>
+      </div>
+
+      <div class="card mb16 hidden" id="open-grading-card">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Ашық сұрақтарды бағалау</h3>
+        <div id="open-grading"></div>
+      </div>
+
+      <div class="card">
+        <div class="flex between gap8 mb16">
+          <h3 style="font-size:16px;font-weight:700">Оқушылар</h3>
+          <span id="live-dot" class="small muted" style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;background:var(--accent);border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span> Live</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Аты-жөні</th>
+                <th>Балл</th>
+                <th>Пайыз</th>
+                <th>Деңгей</th>
+                <th>Шыққаны</th>
+                <th>Сыртта (сек)</th>
+                <th>Күйі</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="9" class="small muted" style="text-align:center;padding:24px">Әзірге қатысушы жоқ</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card mt16">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Соңғы оқиғалар</h3>
+        <div id="events-list" class="small muted">Әзірге оқиға жоқ</div>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  </style>
+  <script type="module" src="js/result.js"></script>
+</body>
+</html>

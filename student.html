@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart BJB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">Smart-БЖБ<span>/ТЖБ</span></a>
+    <span class="small muted">Оқушы режимі</span>
+  </header>
+
+  <main class="container narrow">
+    <!-- Loading / error -->
+    <div id="state-loading" class="card" style="text-align:center">
+      <p class="muted">Жүктелуде...</p>
+    </div>
+    <div id="state-error" class="card hidden" style="text-align:center">
+      <p id="error-text" class="muted"></p>
+      <a href="index.html" class="btn btn-secondary mt16">Басты бетке</a>
+    </div>
+
+    <!-- Step Auth: login / register (replaces old name-only) -->
+    <div id="step-auth" class="card hidden">
+      <h1 class="section-title" style="font-size:20px">Кіру / тіркелу</h1>
+      <p class="small muted mb16">Мұғалім жіберген сілтеме бойынша логин мен парольмен кіріңіз. Алғаш рет болса — тіркеліңіз.</p>
+
+      <div id="auth-logged" class="hidden" style="text-align:center;padding:12px;background:var(--row-bg);border-radius:10px;margin-bottom:12px">
+        <div style="font-weight:700" id="auth-logged-name">—</div>
+        <div class="small muted" id="auth-logged-login"></div>
+        <div class="flex gap8 center mt16">
+          <button id="btn-continue-logged" class="btn btn-primary">Жалғастыру</button>
+          <button id="btn-logout-student" class="btn btn-ghost btn-small">Басқа аккаунт</button>
+        </div>
+      </div>
+
+      <div id="auth-forms">
+        <form id="form-login" class="mt16">
+          <div class="form-group">
+            <label for="login-login">Логин</label>
+            <input id="login-login" class="input" placeholder="мысалы: ayan_8a" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <label for="login-pass">Пароль</label>
+            <input id="login-pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password" required />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%">Кіру</button>
+          <p id="login-error" class="small" style="color:var(--danger);margin-top:8px"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Step 2: Info card + Start -->
+    <div id="step-info" class="card hidden">
+      <h2 class="section-title" style="font-size:20px" id="info-topic">—</h2>
+      <dl class="info-grid" style="margin:16px 0">
+        <dt>Мұғалім</dt><dd id="info-teacher">—</dd>
+        <dt>Пән</dt><dd id="info-subject">—</dd>
+        <dt>Тақырып</dt><dd id="info-topic2">—</dd>
+        <dt>Сұрақ саны</dt><dd id="info-count">—</dd>
+        <dt>Ең жоғары балл</dt><dd id="info-points">—</dd>
+        <dt>Уақыты</dt><dd id="info-duration">—</dd>
+      </dl>
+      <div style="padding:10px 12px;background:var(--row-bg);border-radius:10px;margin-bottom:12px" class="small">
+        Кірген оқушы: <b id="info-student-name">—</b> <span class="muted" id="info-student-login"></span>
+        <button id="btn-change-student" class="btn btn-ghost btn-small" style="margin-left:8px">Ауыстыру</button>
+      </div>
+      <div class="warning-banner">⚠️ Сайттан шығу мұғалімге хабарланады. Тест кезінде басқа бетке ауыспаңыз.</div>
+      <button id="btn-start" class="btn btn-primary" style="width:100%">Бастау</button>
+      <p class="small muted mt16" style="text-align:center">«Бастау» басқанда уақыт кете бастайды.</p>
+    </div>
+
+    <!-- Step 3: Test -->
+    <div id="step-test" class="hidden">
+      <div id="timer" class="timer">
+        <span>⏱ Уақыты</span>
+        <span id="timer-value" class="timer-value">00:00</span>
+      </div>
+      <div class="warning-banner mt16">⚠️ Сайттан шығу мұғалімге хабарланады</div>
+      <div id="questions" class="mt16"></div>
+      <div class="card mt16">
+        <button id="btn-submit" class="btn btn-primary" style="width:100%">Жіберу</button>
+        <p class="small muted mt16" style="text-align:center">Барлық жауап тексеріліп, нәтиже бірден шығады.</p>
+      </div>
+    </div>
+
+    <!-- Step 4: Result -->
+    <div id="step-result" class="card hidden" style="text-align:center">
+      <h2 class="section-title">Нәтиже</h2>
+      <div id="result-score" style="font-size:42px;font-weight:800;color:var(--primary);margin:12px 0">—</div>
+      <div id="result-percent" class="small muted">—</div>
+      <div id="result-badge" class="mt16"></div>
+      <p id="result-desc" class="small muted mt16"></p>
+      <div id="result-breakdown" class="mt16" style="text-align:left"></div>
+      <p class="small muted mt24">Жауаптарыңыз сақталды. Бетті жабуға болады.</p>
+      <div class="flex gap8 center mt16">
+        <a href="index.html" class="btn btn-ghost">Басты бет</a>
+        <button id="btn-retake" class="btn btn-secondary hidden">Қайта тапсыру</button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/student.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Students (оқушы логин/пароль — Firestore plain, прототип) ----------
+    // Прототипте пароль ашық мәтінде сақталады. Кейін Firebase Auth-қа көшіру керек.
+    // Кез келген аутентификацияланған (соның ішінде Anonymous) пайдаланушы оқи/жаза алады.
+    match /students/{studentId} {
+      allow create: if request.auth != null
+        && request.resource.data.login is string
+        && request.resource.data.password is string
+        && request.resource.data.name is string;
+      allow read: if request.auth != null;
+      allow update, delete: if request.auth != null;
+    }
+
+    // ---------- Assessments ----------
+    match /assessments/{assessmentId} {
+      // Жарияланғанды кез келген аутентификацияланған (оқушы anonymous та) оқи алады,
+      // жобаны тек иесі оқи алады
+      allow read: if request.auth != null && (
+        resource.data.status == "published" ||
+        resource.data.ownerUid == request.auth.uid
+      );
+      allow create: if request.auth != null
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid is string;
+      allow update, delete: if request.auth != null
+        && resource.data.ownerUid == request.auth.uid;
+
+      // ---------- Submissions ----------
+      match /submissions/{subId} {
+        // Оқушы (anonymous auth) жарияланған БЖБ-ға submission жасай алады.
+        // studentId/studentUid plain — Firebase Auth-қа байланбаған, сондықтан auth.uid тексерілмейді (прототип)
+        allow create: if request.auth != null
+          && get(/databases/$(database)/documents/assessments/$(assessmentId)).data.status == "published";
+
+        // Оқушы өз submission-ын және мұғалім барлық submission-ды оқи/жаңарта алады
+        // Прототип: кез келген аутентификацияланған оқи алады (оқушы anonymous, мұғалім Google/Email)
+        allow read: if request.auth != null;
+
+        // Оқушы жауабын, leaveCount/totalAwayMs жаңартады; мұғалім openScores/баға қояды
+        allow update: if request.auth != null;
+
+        allow delete: if request.auth != null
+          && get(/databases/$(database)/documents/assessments/$(assessmentId)).data.ownerUid == request.auth.uid;
+      }
+
+      // ---------- Events (сайттан шығу) ----------
+      match /events/{eventId} {
+        allow create: if request.auth != null;
+        // Тек БЖБ иесі (мұғалім) оқи алады — live-мониторинг
+        allow read: if request.auth != null
+          && get(/databases/$(database)/documents/assessments/$(assessmentId)).data.ownerUid == request.auth.uid;
+        allow update, delete: if false;
+      }
+    }
+  }
+}

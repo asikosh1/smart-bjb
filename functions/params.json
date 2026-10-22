@@ -1,0 +1,6 @@
+{
+    "ollama": {
+      "key": "12452dc3893141ca90077463df968a15.P0TlKyEwyPN_8wiUFBNl0MVu",
+      "model": "gpt-oss:120b"
+    }
+}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart BJB — Әкімші</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">Smart-БЖБ<span>/ТЖБ</span></a>
+    <div class="header-actions">
+      <a href="index.html" class="btn btn-ghost btn-small">← Басты бет</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="section-title">Әкімші панелі</h1>
+
+    <!-- Login gate -->
+    <div id="admin-login" class="card" style="max-width:400px;margin:0 auto">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Кіру</h3>
+      <div class="form-group">
+        <label for="admin-pass">Құпиясөз</label>
+        <input id="admin-pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button id="admin-login-btn" class="btn btn-primary" style="width:100%">Кіру</button>
+      <p id="admin-login-error" class="small" style="color:var(--danger);margin-top:8px"></p>
+    </div>
+
+    <!-- Panel (shown after login) -->
+    <div id="admin-panel" class="hidden">
+      <div class="tabs" role="tablist" style="margin-bottom:20px">
+        <button class="tab active" data-section="teachers" role="tab">Мұғалімдер</button>
+        <button class="tab" data-section="students" role="tab">Оқушылар</button>
+        <button class="tab" data-section="assessments" role="tab">Тесттер</button>
+      </div>
+      <div id="admin-section-teachers"></div>
+      <div id="admin-section-students" class="hidden"></div>
+      <div id="admin-section-assessments" class="hidden"></div>
+    </div>
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

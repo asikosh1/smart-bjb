@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart BJB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">Smart-БЖБ<span>/ТЖБ</span></a>
+    <div class="header-actions">
+      <span id="user-name" class="small muted"></span>
+      <div id="avatar" class="avatar" aria-hidden="true">—</div>
+      <button id="btn-logout" class="btn btn-ghost btn-small">Шығу</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="greeting" id="greeting">
+      <div id="g-avatar" class="avatar" style="width:56px;height:56px;font-size:22px">—</div>
+      <div class="greeting-text">
+        <h1 id="g-text">Қайырлы күн!</h1>
+        <p id="g-sub" class="small muted">Жүктелуде...</p>
+      </div>
+    </section>
+
+    <!-- Main tabs: БЖБ vs Оқушылар -->
+    <div class="tabs" role="tablist" aria-label="Бөлімдер" style="margin-bottom:20px">
+      <button class="tab active" data-main="assessments" role="tab" aria-selected="true">Менің БЖБ-ларым</button>
+      <button class="tab" data-main="students" role="tab" aria-selected="false">Оқушылар</button>
+    </div>
+
+    <!-- ========== ASSESSMENTS SECTION ========== -->
+    <div id="section-assessments">
+      <div class="flex between wrap gap12 mb16">
+        <h2 class="section-title" style="margin:0">Менің БЖБ-ларым</h2>
+        <a href="create.html" class="btn btn-primary">+ Жаңа БЖБ</a>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Түр бойынша сүзгі">
+        <button class="tab active" data-filter="all" role="tab" aria-selected="true">Барлығы</button>
+        <button class="tab" data-filter="БЖБ" role="tab" aria-selected="false">БЖБ</button>
+        <button class="tab" data-filter="ТЖБ" role="tab" aria-selected="false">ТЖБ</button>
+      </div>
+
+      <div id="list" class="list"></div>
+      <div id="empty" class="empty hidden">
+        <p>Әзірге БЖБ/ТЖБ жоқ. Алғашқысын жасаңыз!</p>
+        <a href="create.html" class="btn btn-primary">+ Жаңа БЖБ құру</a>
+      </div>
+      <p id="loading" class="small muted">Жүктелуде...</p>
+    </div>
+
+    <!-- ========== STUDENTS SECTION ========== -->
+    <div id="section-students" class="hidden">
+      <div class="flex between wrap gap12 mb16">
+        <h2 class="section-title" style="margin:0">Оқушылар</h2>
+        <span class="small muted" id="students-count"></span>
+      </div>
+
+      <div class="card mb16">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Жаңа оқушы қосу</h3>
+        <p class="small muted mb16">Мұғалім осы жерден оқушыны тіркейді. Оқушы сол логин/парольмен кіреді. Сілтеме бойынша өздігінен тіркелген оқушылар да осында көрінеді.</p>
+        <form id="form-add-student" class="form-row" style="align-items:flex-end">
+          <div class="form-group" style="flex:2">
+            <label for="st-name">Аты-жөні</label>
+            <input id="st-name" class="input" placeholder="Аян Нұрланұлы" required />
+          </div>
+          <div class="form-group" style="flex:1">
+            <label for="st-login">Логин</label>
+            <input id="st-login" class="input" placeholder="ayan_8a" required />
+          </div>
+          <div class="form-group" style="flex:1">
+            <label for="st-pass">Пароль</label>
+            <input id="st-pass" class="input" type="text" placeholder="••••" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Қосу</button>
+        </form>
+        <p id="st-add-error" class="small" style="color:var(--danger);margin-top:8px"></p>
+        <p id="st-add-ok" class="small" style="color:var(--accent);margin-top:8px"></p>
+      </div>
+
+      <div class="card">
+        <div class="flex between gap8 mb16">
+          <h3 style="font-size:16px;font-weight:700">Тізім</h3>
+          <button id="btn-refresh-students" class="btn btn-ghost btn-small">Жаңарту</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Аты-жөні</th>
+                <th>Логин</th>
+                <th>Пароль</th>
+                <th>Әрекет</th>
+              </tr>
+            </thead>
+            <tbody id="students-tbody">
+              <tr><td colspan="5" class="small muted" style="text-align:center;padding:24px">Жүктелуде...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted mt16">Ескерту: пароль прототип үшін ашық мәтінде сақталады. Кейін Firebase Auth-қа көшіру ұсынылады.</p>
+      </div>
+
+      <div class="card mt16">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:8px">Оқушыға сілтеме жіберу</h3>
+        <p class="small muted mb16">Кез келген БЖБ сілтемесін жіберіңіз: <code>student.html?a=ID</code>. Оқушы тіркелмеген болса — сол бетте тіркеліп, кейін сол логинмен кез келген БЖБ-ға кіре береді. Немесе тіркелу парағы: <code>student-auth.html</code> (+ <code>?a=ID</code> болса тікелей тапсырмаға өтеді).</p>
+        <div class="flex gap8 wrap">
+          <button id="btn-copy-student-link" class="btn btn-secondary btn-small">Тіркелу сілтемесін көшіру</button>
+          <span id="student-link-preview" class="small muted" style="align-self:center;word-break:break-all"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Info modal -->
+  <div id="info-backdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="info-title">
+      <h3 id="info-title">Ақпарат</h3>
+      <dl id="info-grid" class="info-grid"></dl>
+      <div class="modal-actions">
+        <button id="info-close" class="btn btn-secondary">Жабу</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share modal -->
+  <div id="share-backdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="share-title">
+      <h3 id="share-title">Бөлісу</h3>
+      <p class="small muted mb16">Оқушыларға осы сілтемені немесе QR-кодты беріңіз — логин/парольмен кіріп тапсырады</p>
+      <div class="form-group">
+        <label for="share-link">Сілтеме</label>
+        <div class="flex gap8">
+          <input id="share-link" class="input" readonly />
+          <button id="share-copy" class="btn btn-secondary" style="white-space:nowrap">Көшіру</button>
+        </div>
+      </div>
+      <div id="share-qr" class="qr-box mt16"></div>
+      <div class="flex gap8 mt16 wrap">
+        <button id="share-download" class="btn btn-secondary">QR-ды PNG жүктеу</button>
+        <a id="share-open-student" class="btn btn-ghost" target="_blank" rel="noopener">Оқушы бетін ашу</a>
+        <a id="share-open-result" class="btn btn-ghost" target="_blank" rel="noopener">Нәтижені ашу</a>
+      </div>
+      <div class="modal-actions">
+        <button id="share-close" class="btn btn-primary">Жабу</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit student modal -->
+  <div id="edit-student-backdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-st-title">
+      <h3 id="edit-st-title">Оқушыны өңдеу</h3>
+      <div class="form-group">
+        <label for="edit-st-name">Аты-жөні</label>
+        <input id="edit-st-name" class="input" />
+      </div>
+      <div class="form-group">
+        <label for="edit-st-login">Логин</label>
+        <input id="edit-st-login" class="input" />
+      </div>
+      <div class="form-group">
+        <label for="edit-st-pass">Пароль</label>
+        <input id="edit-st-pass" class="input" type="text" />
+        <p class="hint">Парольді өзгертсеңіз — оқушы жаңа парольмен кіреді.</p>
+      </div>
+      <p id="edit-st-error" class="small" style="color:var(--danger)"></p>
+      <div class="modal-actions">
+        <button id="edit-st-cancel" class="btn btn-ghost">Болдырмау</button>
+        <button id="edit-st-save" class="btn btn-primary">Сақтау</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/teacher.js"></script>
+</body>
+</html>

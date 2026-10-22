@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart BJB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">Smart-БЖБ<span>/ТЖБ</span></a>
+    <div class="header-actions">
+      <a href="teacher.html" class="btn btn-ghost btn-small">← Тізімге</a>
+      <button id="btn-logout" class="btn btn-ghost btn-small">Шығу</button>
+    </div>
+  </header>
+
+  <main class="container narrow">
+    <h1 class="section-title" id="page-title">Жаңа БЖБ/ТЖБ</h1>
+    <p class="section-sub">Өрістерді толтырып, сұрақтарды қосыңыз. Жариялағанда оқушыларға сілтеме беріледі.</p>
+
+    <form id="form" class="card" novalidate>
+      <div class="form-row">
+        <div class="form-group" style="flex:1">
+          <label for="f-type">Түрі</label>
+          <select id="f-type" class="select" required>
+            <option value="БЖБ">БЖБ</option>
+            <option value="ТЖБ">ТЖБ</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:2">
+          <label for="f-subject">Пән</label>
+          <input id="f-subject" class="input" placeholder="Мысалы: Математика" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="f-topic">Тақырып / бөлім</label>
+        <input id="f-topic" class="input" placeholder="Мысалы: Квадрат теңдеулер" required />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-min">Уақыты — минут</label>
+          <input id="f-min" class="input" type="number" min="0" max="180" value="15" required />
+        </div>
+        <div class="form-group">
+          <label for="f-sec">Уақыты — секунд</label>
+          <input id="f-sec" class="input" type="number" min="0" max="59" value="0" required />
+        </div>
+        <div class="form-group" style="align-self:flex-end">
+          <div class="small muted" id="duration-preview">Барлығы: 15 мин</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Сұрақтар</label>
+        <div id="questions"></div>
+        <div class="flex gap8 wrap mt16">
+          <button type="button" class="btn btn-secondary btn-small" data-add="single">+ Бір жауапты</button>
+          <button type="button" class="btn btn-secondary btn-small" data-add="short">+ Қысқа жауап</button>
+          <button type="button" class="btn btn-secondary btn-small" data-add="open">+ Ашық сұрақ</button>
+          <button type="button" class="btn btn-secondary btn-small" data-add="matching">+ Сәйкестендіру</button>
+        </div>
+        <p class="hint">Бір жауапты: 3–5 нұсқа, біреуі дұрыс. Қысқа жауап: бір сөз/сөйлем. Ашық: мұғалім қолмен бағалайды.</p>
+      </div>
+
+      <div class="flex gap12 wrap mt24">
+        <button type="submit" data-action="draft" class="btn btn-secondary">Жоба ретінде сақтау</button>
+        <button type="submit" data-action="published" class="btn btn-primary">Жариялау</button>
+        <span id="form-status" class="small muted" style="align-self:center"></span>
+      </div>
+    </form>
+  </main>
+
+  <!-- Share modal (after publish) -->
+  <div id="share-backdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="share-title">
+      <h3 id="share-title">Жарияланды! Оқушыларға бөлісіңіз</h3>
+      <div class="form-group">
+        <label for="share-link">Сілтеме</label>
+        <div class="flex gap8">
+          <input id="share-link" class="input" readonly />
+          <button id="share-copy" type="button" class="btn btn-secondary">Көшіру</button>
+        </div>
+      </div>
+      <div id="share-qr" class="qr-box mt16"></div>
+      <div class="flex gap8 mt16 wrap">
+        <button id="share-download" type="button" class="btn btn-secondary">QR-ды PNG жүктеу</button>
+        <a id="share-result" class="btn btn-primary" target="_blank" rel="noopener">Нәтиже бетін ашу</a>
+      </div>
+      <div class="modal-actions">
+        <a href="teacher.html" class="btn btn-ghost">Тізімге өту</a>
+        <button id="share-close" type="button" class="btn btn-secondary">Жабу</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/create.js"></script>
+</body>
+</html>
