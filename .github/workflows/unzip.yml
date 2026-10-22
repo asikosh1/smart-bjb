@@ -1,0 +1,47 @@
+name: Unzip Smart‑БЖБ archive
+
+  on:
+    push:
+      paths:
+        - '*.7z'          # запускаем только когда меняется zip‑файл
+
+  jobs:
+    unzip:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+          with:
+            # получаем всё, включая zip‑файлы
+            fetch-depth: 0
+
+        - name: Install unzip
+          run: sudo apt-get update && sudo apt-get install -y unzip
+
+        - name: Unzip the archive
+          run: |
+            # ищем первый zip‑файл в корне (можно уточнить имя)
+            ZIPFILE=$(ls *.zip | head -n1)
+            echo "Unzipping $ZIPFILE"
+            unzip -q "$ZIPFILE" -d extracted
+
+            # перемещаем содержимое в корень репозитория
+            shopt -s dotglob
+            mv extracted/* .
+
+            # удаляем вспомогательные папки
+            rm -rf extracted "$ZIPFILE"
+
+        - name: Commit unzipped files
+          run: |
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add -A
+            # Если ничего не изменилось – выходим
+            if git diff --cached --quiet; then
+              echo "No changes to commit"
+              exit 0
+            fi
+            git commit -m "🤖 Unzip archive and add source files"
+            git push
